@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLACKBERRY — Art Universe</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #05050A;
+            --purple: #7B2EFF;
+            --blue: #00D9FF;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* BACKGROUND */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(5, 5, 10, 0.4), rgba(5, 5, 10, 0.8)),
+                url("{{ url_for('static', filename='images/bg.svg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -10;
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 1250px;
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(12, 12, 18, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 999px;
+            box-shadow: 0 10px 45px rgba(0, 0, 0, .5);
+            z-index: 999;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .logo span {
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            opacity: .8;
+            transition: .3s;
+        }
+
+        nav a:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px var(--blue);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 120px 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 20px;
+        }
+
+        .gradient {
+            background: linear-gradient(90deg, #8b5cf6, #6d5efc, #00d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            max-width: 700px;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            opacity: .85;
+        }
+
+        .scroll {
+            margin-top: 80px;
+            font-size: .9rem;
+            letter-spacing: 4px;
+            opacity: .6;
+            animation: updown 2s infinite;
+        }
+
+        /* GALLERY SECTION */
+        .gallery-section {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 50px;
+        }
+
+        .art-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 30px;
+        }
+
+        .art-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 18px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .art-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 217, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 217, 255, 0.2);
+        }
+
+        .art-img-box {
+            width: 100%;
+            height: 320px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .art-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .art-info {
+            padding: 15px 5px 5px 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .art-info h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .art-info span {
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+
+        .art-caption {
+            font-size: 0.88rem;
+            line-height: 1.5;
+            opacity: 0.8;
+            margin-top: 8px;
+            padding: 0 5px;
+        }
+
+        /* CONTACT SECTION */
+        .contact-section {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 40px 20px 60px 20px;
+        }
+
+        .contact-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 45px 30px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .contact-card h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .contact-card p {
+            font-size: 0.98rem;
+            opacity: 0.8;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .gmail-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 32px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #7B2EFF, #00D9FF);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(123, 46, 255, 0.35);
+        }
+
+        .gmail-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 217, 255, 0.5);
+        }
+
+        .gmail-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 50px 20px 40px 20px;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(5, 5, 10, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .support-box {
+            margin-bottom: 20px;
+        }
+
+        .support-text {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .support-link {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
+        .support-link:hover {
+            color: var(--white);
+            text-shadow: 0 0 12px var(--blue);
+        }
+
+        .copyright {
+            font-size: 0.85rem;
+            opacity: 0.5;
+            letter-spacing: 1.5px;
+            margin-top: 15px;
+        }
+
+        @keyframes updown {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(8px); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background"></div>
+
+    <nav>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo">
+            <span>BLACKBERRY</span>
+        </div>
+        <a href="https://instagram.com/orbit.archives" target="_blank">@orbit.archives</a>
+    </nav>
+
+    <section class="hero">
+        <h1>Every Sketch<br><span class="gradient">A Memory.</span></h1>
+        <p class="subtitle">
+            Welcome to BLACKBERRY —
+            A place where every portrait tells a story,
+            every stroke preserves a memory,
+            and every artwork becomes timeless.
+        </p>
+        <div class="scroll">SCROLL</div>
+    </section>
+
+    <section class="gallery-section">
+        <h2 class="section-title"><span class="gradient">FEATURED</span> ARCHIVES</h2>
+        
+        <div class="art-grid">
+
+            <div class="art-card">
+                <div class="art-img-box">
+                    <img src="{{ url_for('static', filename='drawings/art1.svg') }}" alt="Artwork 1">
+                </div>
+                <div class="art-info">
+                    <h4>Portrait #01</h4>
+                    <span>2026</span>
+                </div>
+                <p class="art-caption">Captured with delicate strokes, preserving a moment in silence.</p>
+            </div>
+
+            <div class="art-card">
+                <div class="art-img-box">
+                    <img src="{{ url_for('static', filename='drawings/art2.svg') }}" alt="Artwork 2">
+                </div>
+                <div class="art-info">
+                    <h4>Portrait #02</h4>
+                    <span>2026</span>
+                </div>
+                <p class="art-caption">A play of shadows and light, capturing expression and emotion.</p>
+            </div>
+
+            <div class="art-card">
+                <div class="art-img-box">
+                    <img src="{{ url_for('static', filename='drawings/art3.svg') }}" alt="Artwork 3">
+                </div>
+                <div class="art-info">
+                    <h4>Portrait #03</h4>
+                    <span>2026</span>
+                </div>
+                <p class="art-caption">Dark cosmic aesthetics blended into fine portraiture details.</p>
+            </div>
+
+            <div class="art-card">
+                <div class="art-img-box">
+                    <img src="{{ url_for('static', filename='drawings/art4.svg') }}" alt="Artwork 4">
+                </div>
+                <div class="art-info">
+                    <h4>Portrait #04</h4>
+                    <span>2026</span>
+                </div>
+                <p class="art-caption">Every line drawn carries a story crafted from memories.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="contact-card">
+            <h3><span class="gradient">GET IN TOUCH</span></h3>
+            <p>For portrait commissions, collaborations, or general inquiries, send a direct email.</p>
+            
+            <a href="mailto:orbitxarchives@gmail.com" class="gmail-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <span>orbitxarchives@gmail.com</span>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="support-box">
+            <p class="support-text">Follow for support:</p>
+            <a href="https://instagram.com/orbit.archives" target="_blank" class="support-link">@orbit.archives</a>
+        </div>
+        <p class="copyright">&copy; 2026 BLACKBERRY &bull; Created by Srijon</p>
+    </footer>
+
+</body>
+</html>
